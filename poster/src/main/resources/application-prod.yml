@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: game-auto-script-poster

@@ -1,5 +1,8 @@
 # Compiled class file
 *.class
+common-util/target/
+javafx-frame/target/
+poster/target/
 
 # Log file
 *.log
@@ -22,3 +25,11 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# about idea
+.idea/
+*.iml
+
+# img
+poster\src\main\resources\img\LegendsImg
+poster\src\main\resources\img\other

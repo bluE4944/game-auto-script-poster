@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "poster.app",
+      "type": "java.lang.String",
+      "description": "应用名."
+    },
+    {
+      "name": "poster.version",
+      "type": "java.lang.String",
+      "description": "应用版本号."
+    }
+  ] }

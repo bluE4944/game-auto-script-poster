@@ -1,0 +1,24 @@
+{
+  "groups": [
+    {
+      "sourceType": "com.amc.poster.core.properties.PosterProperties",
+      "name": "poster",
+      "type": "com.amc.poster.core.properties.PosterProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "poster.app",
+      "type": "java.lang.String",
+      "description": "应用名称.",
+      "sourceType": "com.amc.poster.core.properties.PosterProperties"
+    },
+    {
+      "name": "poster.version",
+      "type": "java.lang.String",
+      "description": "版本名称.",
+      "sourceType": "com.amc.poster.core.properties.PosterProperties"
+    }
+  ],
+  "hints": []
+}
