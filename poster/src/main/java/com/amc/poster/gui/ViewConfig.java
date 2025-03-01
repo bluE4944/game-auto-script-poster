@@ -5,24 +5,27 @@ import com.amc.javafx.interfaces.ViewBatchRegistry;
 import com.amc.javafx.model.WindowInfo;
 import com.amc.javafx.util.ViewsUtil;
 import com.amc.poster.constants.PosterConstant;
-import com.amc.poster.model.PosterInfo;
+import com.amc.poster.core.properties.PosterProperties;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
 
 @Configuration
+@RequiredArgsConstructor(onConstructor_ = @__(@Autowired))
 public class ViewConfig implements ViewBatchRegistry {
 
-    private final PosterInfo posterInfo = PosterConstant.posterInfo;
+    private final PosterProperties posterProperties;
 
     @Start
     public void start(WindowInfo windowInfo) {
-        windowInfo.setTitle(posterInfo.getApp());
-        windowInfo.setX(posterInfo.getX());
-        windowInfo.setY(posterInfo.getY());
+        windowInfo.setTitle(posterProperties.getApp());
+        windowInfo.setX(posterProperties.getLocationX());
+        windowInfo.setY(posterProperties.getLocationY());
         windowInfo.setWidth(489);
         windowInfo.setHeight(220);
         windowInfo.setIcon(PosterConstant.ICON_PATH);
@@ -73,19 +76,19 @@ public class ViewConfig implements ViewBatchRegistry {
 
     private void setViewText(ViewsUtil viewsUtil) {
         TextField titleTextField = viewsUtil.getNode("titleTextField", TextField.class);
-        titleTextField.setText(posterInfo.getTitle());
+        titleTextField.setText(posterProperties.getTitle());
 
         TextField imgPathTextField = viewsUtil.getNode("imgPathTextField", TextField.class);
-        imgPathTextField.setText(posterInfo.getImgPath());
+        imgPathTextField.setText(posterProperties.getBackendImgPath());
 
         ChoiceBox<String> scalingChoiceBox = viewsUtil.getNode("scalingChoiceBox", ChoiceBox.class);
-        scalingChoiceBox.setValue(posterInfo.getScaling().toString());
+        scalingChoiceBox.setValue(posterProperties.getScaling().toString());
 
         TextField efficiencyTextField = viewsUtil.getNode("efficiencyTextField", TextField.class);
-        efficiencyTextField.setText(posterInfo.getEfficiency().toString());
+        efficiencyTextField.setText(posterProperties.getEfficiency().toString());
 
         TextField imagePathTextField = viewsUtil.getNode("imagePathTextField", TextField.class);
-        imagePathTextField.setText(posterInfo.getImagePath());
+        imagePathTextField.setText(posterProperties.getFontImgPath());
     }
 
     /**

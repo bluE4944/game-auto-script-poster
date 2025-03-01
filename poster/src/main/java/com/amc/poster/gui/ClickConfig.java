@@ -1,10 +1,12 @@
 package com.amc.poster.gui;
 
+import cn.hutool.core.util.StrUtil;
 import com.amc.javafx.annotations.BindView;
 import com.amc.javafx.annotations.OnClick;
 import com.amc.javafx.annotations.Stop;
 import com.amc.javafx.util.ViewUtil;
 import com.amc.poster.constants.PosterConstant;
+import com.amc.poster.core.properties.PosterProperties;
 import com.amc.poster.model.PosterInfo;
 import com.amc.poster.model.ViewInfo;
 import com.amc.poster.script.RobotWork;
@@ -17,6 +19,8 @@ import com.sun.jna.platform.DesktopWindow;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.StringUtils;
@@ -33,9 +37,11 @@ import java.util.stream.Collectors;
  * @author AMC
  */
 @Configuration
+@RequiredArgsConstructor(onConstructor_ = @__(@Autowired))
 public class ClickConfig {
 
-    private static final String pathPrefix = System.getProperty("user.dir");
+    private static final String PATH_PREFIX = System.getProperty("user.dir");
+    private final PosterProperties posterProperties;
 
     @BindView
     private static ViewInfo viewInfo;
@@ -74,11 +80,11 @@ public class ClickConfig {
 
     @OnClick
     public void selectImgPathButton() {
-        File selectedFile = ElementApi.showDirectoryChooser(pathPrefix);
+        File selectedFile = ElementApi.showDirectoryChooser(PATH_PREFIX);
         if (selectedFile != null) {
             String path = selectedFile.getAbsolutePath();
-            if (path.startsWith(pathPrefix)) {
-                path = path.substring(pathPrefix.length());
+            if (path.startsWith(PATH_PREFIX)) {
+                path = path.substring(PATH_PREFIX.length());
                 viewInfo.setImgPathTextField(path);
             }
         }
@@ -87,23 +93,31 @@ public class ClickConfig {
     @OnClick
     public void takeImgButton() {
         String imgPath = viewInfo.getImgPathTextField();
-        if (isIllegalPath(imgPath)) return;
+        if (isIllegalPath(imgPath)) {
+            return;
+        }
         WinDef.HWND hwnd = getHwnd();
-        if (hwnd == null) return;
+        if (hwnd == null) {
+            return;
+        }
 
         BufferedImage image = WindowUtil.getWinImage(hwnd);
-        ElementApi.showImageView(image, pathPrefix + imgPath);
+        ElementApi.showImageView(image, PATH_PREFIX + imgPath);
     }
 
     @OnClick
     public void startButton(Button startButton) {
         String imgPath = viewInfo.getImgPathTextField();
-        if (isIllegalPath(imgPath)) return;
+        if (isIllegalPath(imgPath)) {
+            return;
+        }
         WinDef.HWND hwnd = getHwnd();
-        if (hwnd == null) return;
+        if (hwnd == null) {
+            return;
+        }
 
         SimpleWork.isRun = true;
-        SimpleWork work = new SimpleWork(hwnd, pathPrefix + imgPath, viewInfo.getScalingChoiceBox(), viewInfo.getEfficiencyTextField(), startButton);
+        SimpleWork work = new SimpleWork(hwnd, PATH_PREFIX + imgPath, viewInfo.getScalingChoiceBox(), viewInfo.getEfficiencyTextField(), startButton);
         new Thread(work).start();
 
         ViewUtil.showMessageDialog("已开启一个任务");
@@ -119,11 +133,11 @@ public class ClickConfig {
 
     @OnClick
     public void selectImagePathButton() {
-        File selectedFile = ElementApi.showDirectoryChooser(pathPrefix);
+        File selectedFile = ElementApi.showDirectoryChooser(PATH_PREFIX);
         if (selectedFile != null) {
             String imagePath = selectedFile.getAbsolutePath();
-            if (imagePath.startsWith(pathPrefix)) {
-                imagePath = imagePath.substring(pathPrefix.length());
+            if (imagePath.startsWith(PATH_PREFIX)) {
+                imagePath = imagePath.substring(PATH_PREFIX.length());
                 viewInfo.setImagePathTextField(imagePath);
             }
         }
@@ -132,12 +146,14 @@ public class ClickConfig {
     @OnClick
     public void takeImageButton(Stage window) throws Exception {
         String imagePath = viewInfo.getImagePathTextField();
-        if (isIllegalPath(imagePath)) return;
+        if (isIllegalPath(imagePath)) {
+            return;
+        }
 
         window.setIconified(true);
         Thread.sleep(300);
         BufferedImage desktopImage = RobotUtil.getDesktopImage();
-        ElementApi.showImageView(desktopImage, pathPrefix + imagePath);
+        ElementApi.showImageView(desktopImage, PATH_PREFIX + imagePath);
     }
 
     @OnClick
@@ -146,11 +162,13 @@ public class ClickConfig {
 
         if (Objects.equals(text, "开刷")) {
             String imagePath = viewInfo.getImagePathTextField();
-            if (isIllegalPath(imagePath)) return;
+            if (isIllegalPath(imagePath)) {
+                return;
+            }
 
             startOrStopButton.setText("停刷");
             Integer efficiency = viewInfo.getEfficiencyTextField();
-            robotWorkThread = new Thread(new RobotWork(pathPrefix + imagePath, efficiency, startOrStopButton));
+            robotWorkThread = new Thread(new RobotWork(PATH_PREFIX + imagePath, efficiency, startOrStopButton));
             robotWorkThread.start();
         }
         else {
@@ -163,19 +181,34 @@ public class ClickConfig {
         }
     }
 
+//    @Stop
+//    public void stop(Stage window) {
+//        PosterInfo posterInfo = PosterConstant.posterInfo;
+//
+//        posterInfo.setX((int) window.getX());
+//        posterInfo.setY((int) window.getY());
+//        posterInfo.setTitle(viewInfo.getTitleTextField());
+//        posterInfo.setImgPath(viewInfo.getImgPathTextField());
+//        posterInfo.setScaling(viewInfo.getScalingChoiceBox());
+//        posterInfo.setEfficiency(viewInfo.getEfficiencyTextField());
+//        posterInfo.setImagePath(viewInfo.getImagePathTextField());
+//
+//        PropertiesUtil.saveModel(PosterConstant.propertyPath, posterInfo);
+//        System.exit(0);
+//    }
+
     @Stop
     public void stop(Stage window) {
-        PosterInfo posterInfo = PosterConstant.posterInfo;
 
-        posterInfo.setX((int) window.getX());
-        posterInfo.setY((int) window.getY());
-        posterInfo.setTitle(viewInfo.getTitleTextField());
-        posterInfo.setImgPath(viewInfo.getImgPathTextField());
-        posterInfo.setScaling(viewInfo.getScalingChoiceBox());
-        posterInfo.setEfficiency(viewInfo.getEfficiencyTextField());
-        posterInfo.setImagePath(viewInfo.getImagePathTextField());
+        posterProperties.setLocationX((int) window.getX());
+        posterProperties.setLocationY((int) window.getY());
+        posterProperties.setTitle(viewInfo.getTitleTextField());
+        posterProperties.setBackendImgPath(viewInfo.getImgPathTextField());
+        posterProperties.setScaling(viewInfo.getScalingChoiceBox());
+        posterProperties.setEfficiency(viewInfo.getEfficiencyTextField());
+        posterProperties.setFontImgPath(viewInfo.getImagePathTextField());
 
-        PropertiesUtil.saveModel(PosterConstant.propertyPath, posterInfo);
+        PropertiesUtil.saveModel(PosterConstant.propertyPath, posterProperties);
         System.exit(0);
     }
 
@@ -192,11 +225,11 @@ public class ClickConfig {
     }
 
     private boolean isIllegalPath(String path) {
-        if (StringUtils.isEmpty(path)) {
+        if (StrUtil.isEmpty(path)) {
             ViewUtil.showMessageDialog("请先选择图片文件夹路径");
             return true;
         }
-        if (!new File(pathPrefix + path).exists()) {
+        if (!new File(PATH_PREFIX + path).exists()) {
             ViewUtil.showMessageDialog("请选择正确的文件夹路径");
             return true;
         }

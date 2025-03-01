@@ -1,6 +1,8 @@
 package com.amc.poster.script;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.amc.poster.constants.PosterConstant;
+import com.amc.poster.core.properties.PosterProperties;
 import com.amc.poster.model.ImageData;
 import com.amc.poster.util.ImageUtil;
 import com.amc.poster.util.MusicUtil;
@@ -37,11 +39,13 @@ public class RobotWork implements Runnable {
             return;
         }
 
-        int clickSpaceMin = PosterConstant.posterInfo.getClickSpaceMin();
-        int clickSpaceSize = PosterConstant.posterInfo.getClickSpaceMax() - clickSpaceMin;
+        PosterProperties posterProperties = SpringUtil.getBean(PosterProperties.class);
+
+        int clickSpaceMin = posterProperties.getClickSpaceMin();
+        int clickSpaceSize = posterProperties.getClickSpaceMax() - clickSpaceMin;
         Point lastMousePoint = new Point(0, 0);
         int scanNum = 0;
-        int maxScanNum = PosterConstant.posterInfo.getNoActionMaxTime() * 1000 / efficiency;
+        int maxScanNum = posterProperties.getNoActionMaxTime() * 1000 / efficiency;
 
         // 开始刷本
         while (true) {

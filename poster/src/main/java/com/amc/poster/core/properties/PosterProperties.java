@@ -55,7 +55,7 @@ public class PosterProperties {
     /**
      * 缩放比例
      */
-    private String scaling;
+    private Double scaling;
     /**
      * 脚本效率, 单位: 毫秒
      */

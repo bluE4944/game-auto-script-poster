@@ -1,6 +1,5 @@
 package com.amc.poster.constants;
 
-import cn.hutool.setting.yaml.YamlUtil;
 import com.amc.poster.model.PosterInfo;
 import com.amc.util.file.PropertiesUtil;
 import com.amc.util.file.ResourceUtil;
@@ -22,8 +21,8 @@ public class PosterConstant {
     public static void loadData() {
         String configFilePath = "\\application-local.yml";
         initField(configFilePath);
-        checkConfigFile(configFilePath);
-        startCheckRunThread();
+//        checkConfigFile(configFilePath);
+//        startCheckRunThread();
     }
 
     public static String getMusicPath() {
@@ -33,7 +32,7 @@ public class PosterConstant {
     private static void initField(String configFilePath) {
         String conf = ResourceUtil.bindResourceDir("conf");
         propertyPath = ResourceUtil.getResource(configFilePath);
-        posterInfo = PropertiesUtil.getModel(propertyPath, PosterInfo.class);
+//        posterInfo = PropertiesUtil.getModel(propertyPath, PosterInfo.class);
     }
 
     private static void checkConfigFile(String configFilePath) {

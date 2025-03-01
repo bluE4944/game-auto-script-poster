@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * Java Properties不好用, 所以重写了
+ * @author AMC
  */
 public class PropertiesUtil {
 
@@ -49,10 +50,6 @@ public class PropertiesUtil {
             }
         }
         return bean;
-    }
-
-    public  static <T> T getYmlModel(String filePath, Class<T> modelClass) {
-
     }
 
     /**
